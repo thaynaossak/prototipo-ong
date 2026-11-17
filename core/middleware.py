@@ -3,6 +3,8 @@ from django.contrib.auth import logout
 class IdleSessionMiddleware:
     def __init__(self,get_response): self.get_response=get_response
     def __call__(self,request):
+        if request.path == '/health/':
+            return self.get_response(request)
         now=time.time()
         if request.user.is_authenticated:
             last=request.session.get('last_activity',now)

@@ -57,3 +57,10 @@ DEFAULT_FROM_EMAIL=os.getenv('DEFAULT_FROM_EMAIL','Lotus <noreply@example.invali
 # Set only behind a trusted proxy that strips incoming forwarded headers.
 if os.getenv('TRUST_PROXY','0')=='1':
     SECURE_PROXY_SSL_HEADER=('HTTP_X_FORWARDED_PROTO','https')
+
+# Render supplies this hostname for the actual service (not guessed in code).
+render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME','')
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
+    CSRF_TRUSTED_ORIGINS.append('https://'+render_host)
+    DATABASES['default'].setdefault('OPTIONS',{})['connect_timeout']=3

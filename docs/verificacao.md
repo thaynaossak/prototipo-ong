@@ -11,3 +11,5 @@ Executada em Python 3.12.14 e SQLite local em 17/11/2026.
 Não executado localmente: concorrência com PostgreSQL, Docker, SMTP externo, aparelho/rede da ONG, meta móvel de 3s, auditoria completa de acessibilidade e validação com representante real. GitHub Actions está configurado para testar com PostgreSQL; seu resultado deve ser consultado separadamente. Backups, HTTPS e retenção exigem infraestrutura configurada conforme docs/implantacao.md.
 
 Regressão adicional: envio de 2.147.483.648 cestas retorna formulário com erro, sem inserir atendimento. O limite de 9.999 cestas é validado no servidor antes da persistência; não é um critério de concessão de alimentos.
+
+Preparação Render: adicionados três testes de readiness e criação idempotente do administrador inicial. A suíte da main contém 25 testes; os dois testes adicionais do filtro permanecem propostos no PR #1. Publicação e prova HTTP só serão confirmadas após aprovação do plano no Render.

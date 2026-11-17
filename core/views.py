@@ -104,3 +104,17 @@ def change_status(request,pk):
     if status not in Family.Status.values: messages.error(request,'Situação inválida.')
     else: f.status=status;f.save(update_fields=['status','updated_at']);messages.success(request,'Situação atualizada pelo gestor.')
     return redirect('detail',pk=pk)
+
+# Public readiness probe: no personal data, no writes and no technical errors.
+from django.http import JsonResponse
+from django.db import connection, DatabaseError
+from django.views.decorators.http import require_GET
+@require_GET
+def health(request):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT 1')
+            cursor.fetchone()
+    except DatabaseError:
+        return JsonResponse({'status':'unavailable'},status=503)
+    return JsonResponse({'status':'ok'})

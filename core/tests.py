@@ -105,3 +105,28 @@ class FlowTests(TestCase):
         self.assertEqual(response.status_code,200)
         self.assertContains(response,'9999')
         self.assertEqual(Attendance.objects.count(),0)
+
+    def test_health_allows_anonymous_without_personal_data(self):
+        self.client.logout()
+        r=self.client.get(reverse('health'))
+        self.assertEqual(r.status_code,200)
+        self.assertEqual(r.json(),{'status':'ok'})
+
+    def test_health_returns_503_without_technical_details(self):
+        from unittest.mock import patch
+        from django.db import OperationalError
+        with patch('core.views.connection.cursor',side_effect=OperationalError('secret-connection-detail')):
+            r=self.client.get(reverse('health'))
+        self.assertEqual(r.status_code,503)
+        self.assertEqual(r.json(),{'status':'unavailable'})
+
+    @override_settings(DEBUG=False)
+    def test_bootstrap_admin_does_not_reset_existing_password(self):
+        import os
+        from unittest.mock import patch
+        with patch.dict(os.environ,{'DJANGO_SUPERUSER_USERNAME':'initial_admin','DJANGO_SUPERUSER_PASSWORD':'Temporary-test-12345!'}):
+            call_command('bootstrap_admin',verbosity=0)
+            u=get_user_model().objects.get(username='initial_admin');old=u.password
+            call_command('bootstrap_admin',verbosity=0)
+            u.refresh_from_db();self.assertEqual(u.password,old)
+            self.assertTrue(u.is_superuser)
