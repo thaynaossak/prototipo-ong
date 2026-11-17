@@ -98,3 +98,10 @@ class FlowTests(TestCase):
         self.user.email='teste@example.invalid';self.user.save()
         self.client.post(reverse('password_reset'),{'email':self.user.email})
         self.assertEqual(len(mail.outbox),1)
+
+    def test_excessive_baskets_rejected_without_write(self):
+        data=self.data();data['baskets']=2147483648
+        response=self.client.post(reverse('delivery',args=[self.family.pk]),data)
+        self.assertEqual(response.status_code,200)
+        self.assertContains(response,'9999')
+        self.assertEqual(Attendance.objects.count(),0)

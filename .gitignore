@@ -1,5 +1,4 @@
 .venv/
-.venv
 __pycache__/
 *.py[cod]
 *.sqlite3
@@ -10,3 +9,5 @@ staticfiles/
 backups/
 *.tar.gz
 .pytest_cache/
+
+.venv

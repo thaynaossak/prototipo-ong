@@ -33,7 +33,7 @@ Members=inlineformset_factory(Family,Member,form=MemberForm,formset=MemberSet,ex
 class AttendanceForm(forms.Form):
     date=forms.DateField(label='Data prevista / entrega',initial=timezone.localdate,widget=forms.DateInput(attrs={'type':'date'}))
     status=forms.ChoiceField(label='Operação',choices=[('delivered','Registrar entrega'),('planned','Agendar atendimento')])
-    baskets=forms.IntegerField(label='Quantidade de cestas',min_value=0,initial=0)
+    baskets=forms.IntegerField(label='Quantidade de cestas',min_value=0,max_value=9999,initial=0)
     milk=forms.DecimalField(label='Leite em litros',min_value=0,max_value=999999,decimal_places=1,initial=0)
     token=forms.CharField(widget=forms.HiddenInput)
     def clean(self):
