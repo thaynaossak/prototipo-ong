@@ -17,3 +17,7 @@
 | RNF04 | HTML semântico, rótulos, foco, alvos 48px, mensagens textuais, responsividade |
 
 Segurança não absoluta; revisão no domínio final é obrigatória. Concessão de alimentos e critérios de prioridade são decisões humanas. O sistema não comprova elegibilidade, nem usa ausências para excluir automaticamente. Endereço e nascimento têm finalidade operacional; saúde, CPF, imagens de documentos e dados bancários não são coletados.
+
+## Limites de entrada das entregas
+
+Quantidade de cestas: inteiro entre 0 e 9.999. Leite: número decimal entre 0 e 999.999, com uma casa decimal. Entregas exigem pelo menos uma quantidade positiva e data não futura; agendamentos exigem quantidades zeradas. As restrições são verificadas no servidor mesmo sem JavaScript. Valores fora da faixa devem produzir mensagem de correção, preservando os demais campos, sem criar atendimento. Esses limites são proteções técnicas contra entradas incompatíveis com o MVP; a ONG continua responsável pelas decisões de atendimento.
