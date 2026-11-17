@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: lotus
+      POSTGRES_USER: lotus
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lotus"]
+      interval: 5s
+      retries: 10
+  web:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://lotus:${POSTGRES_PASSWORD}@db:5432/lotus
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  postgres_data:
