@@ -105,3 +105,20 @@ class FlowTests(TestCase):
         self.assertEqual(response.status_code,200)
         self.assertContains(response,'9999')
         self.assertEqual(Attendance.objects.count(),0)
+
+    def test_history_filter_includes_boundaries(self):
+        today=timezone.localdate()
+        record_attendance(self.family,self.user,self.data(),uuid.uuid4())
+        old=self.data();old['date']=today-timedelta(days=1)
+        record_attendance(self.family,self.user,old,uuid.uuid4())
+        response=self.client.get(reverse('detail',args=[self.family.pk]),{'start':today.isoformat(),'end':today.isoformat()})
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.context['page'].paginator.count,1)
+        self.assertEqual(response.context['page'][0].date,today)
+
+    def test_invalid_history_period_shows_error_without_mutation(self):
+        record_attendance(self.family,self.user,self.data(),uuid.uuid4())
+        today=timezone.localdate()
+        response=self.client.get(reverse('detail',args=[self.family.pk]),{'start':today.isoformat(),'end':(today-timedelta(days=1)).isoformat()})
+        self.assertContains(response,'Informe um intervalo de datas válido.')
+        self.assertEqual(Attendance.objects.count(),1)
